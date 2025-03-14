@@ -46,9 +46,9 @@ const Header = () => {
           </nav>
 
           <div className="hidden md:flex space-x-4">
-            <button className="bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition-all duration-300">
+            <a href="/login" className="bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition-all duration-300">
               Login
-            </button>
+            </a>
 
             <a href="/signup" className="bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition-all duration-300">
              Sign Up
