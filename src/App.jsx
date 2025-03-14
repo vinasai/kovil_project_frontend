@@ -15,6 +15,9 @@ import Signup from './components/Signup';
 import Event from './components/eventcalender';
 import EventManagement from './components/EventManagement';
 import DonationManagement from './components/DonationManagement';
+import ServiceDetails from './components/ServiceDetails';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './components/Login'
 
 
 
@@ -37,6 +40,19 @@ function App() {
       <Route path="/event" element={<Event/>} />
       <Route path="/eventadmin" element={<EventManagement/>} />
       <Route path="/donateadmin" element={<DonationManagement/>} />
+      <Route path="/servicedetails/:id" element={<ServiceDetails />} />
+      <Route path="/login" element={<Login/>} />
+
+
+      <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <Admin/>
+            </ProtectedRoute>
+          }
+        />
+
       
     
 
