@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
+import { FaPlus } from "react-icons/fa";
 
-const DonateForm = () => {
+const SignupForm = () => {
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -9,12 +10,16 @@ const DonateForm = () => {
     raasi: "",
     dob: "",
     address: "",
+    password: "",
+    confirmpassword: "",
   });
+
+  const [familyMembers, setFamilyMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.firstname]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -23,11 +28,22 @@ const DonateForm = () => {
     setSuccess(null);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/donate", formData);
-      setSuccess("Thank you for your generous donation!");
-      setFormData({ firstname: "", lastname: "", natchathiram: "", raasi: "", dob: "", address: "" });
+      const payload = { ...formData, familyMembers }; // Combine data
+      const response = await axios.post("http://localhost:5000/api/signup", payload);
+      setSuccess("Thank you for creating account!");
+      setFormData({
+        firstname: "",
+        lastname: "",
+        natchathiram: "",
+        raasi: "",
+        dob: "",
+        address: "",
+        password: "",
+        confirmpassword: "",
+      });
+      setFamilyMembers([]);
     } catch (error) {
-      setSuccess("Failed to process your donation. Please try again.");
+      setSuccess("Failed to process your registration. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -60,31 +76,10 @@ const DonateForm = () => {
               className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Natchathiram</label>
-            <input
-              type="text"
-              name="natchathiram"
-              value={formData.natchathiram}
-              onChange={handleChange}
-              required
-              className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Raasi</label>
-            <input
-              type="text"
-              name="raasi"
-              value={formData.raasi}
-              onChange={handleChange}
-              required
-              className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
-            />
-          </div>
+
           <div>
             <label className="block text-sm font-medium">Date of Birth</label>
-             <input
+            <input
               type="date"
               name="dob"
               value={formData.dob}
@@ -107,14 +102,88 @@ const DonateForm = () => {
           <div>
             <label className="block text-sm font-medium">Password</label>
             <input
-              type="text"
-              name="raasi"
-              value={formData.raasi}
+              type="password"
+              name="password"
+              value={formData.password}
               onChange={handleChange}
               required
               className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium">Confirm Password</label>
+            <input
+              type="password"
+              name="confirmpassword"
+              value={formData.confirmpassword}
+              onChange={handleChange}
+              required
+              className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
+            />
+          </div>
+
+          {/* Add Family Members */}
+          <div
+            className="flex items-center mt-2 cursor-pointer text-[#1E3A8A] hover:text-[#2563EB]"
+            onClick={() =>
+              setFamilyMembers([...familyMembers, { name: "", dob: "", relationship: "" }])
+            }
+          >
+            <FaPlus className="mr-2" />
+            <span className="font-medium">Add Family Members</span>
+          </div>
+
+          {familyMembers.map((member, index) => (
+            <div
+              key={index}
+              className="mt-4 p-4 border border-[#8B4513] rounded bg-[#FFFF]"
+            >
+              <div className="mb-2">
+                <label className="block text-sm font-medium">Family Member Name</label>
+                <input
+                  type="text"
+                  value={member.name}
+                  onChange={(e) => {
+                    const updated = [...familyMembers];
+                    updated[index].name = e.target.value;
+                    setFamilyMembers(updated);
+                  }}
+                  className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-sm font-medium">Date of Birth</label>
+                <input
+                  type="date"
+                  value={member.dob}
+                  onChange={(e) => {
+                    const updated = [...familyMembers];
+                    updated[index].dob = e.target.value;
+                    setFamilyMembers(updated);
+                  }}
+                  className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-sm font-medium">
+                  Specify the relationship with the family member
+                </label>
+                <input
+                  type="text"
+                  value={member.relationship}
+                  onChange={(e) => {
+                    const updated = [...familyMembers];
+                    updated[index].relationship = e.target.value;
+                    setFamilyMembers(updated);
+                  }}
+                  className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
+                />
+              </div>
+            </div>
+          ))}
 
           <button
             type="submit"
@@ -130,4 +199,4 @@ const DonateForm = () => {
   );
 };
 
-export default DonateForm;
+export default SignupForm;
