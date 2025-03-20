@@ -9,6 +9,7 @@ import Gallery from './components/Gallary';
 import VideoGallery from './components/VideoGallery';
 import Services from './components/Services';
 import Admin from './components/admin';
+import AdminUserManagement from './components/AdminUserManagement';
 import { Calendar } from 'lucide-react';
 import Donate from './components/Donate';
 import Signup from './components/Signup';
@@ -37,6 +38,7 @@ function App() {
       <Route path="/donate" element={<Donate/>} />
       <Route path="/signup" element={<Signup/>} />
       <Route path="/admin" element={<Admin/>} />
+      <Route path="/admin/users" element={<AdminUserManagement/>} />
       <Route path="/event" element={<Event/>} />
       <Route path="/eventadmin" element={<EventManagement/>} />
       <Route path="/donateadmin" element={<DonationManagement/>} />
@@ -52,6 +54,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminUserManagement />
+          </ProtectedRoute>
+        }
+      />
 
       
     
