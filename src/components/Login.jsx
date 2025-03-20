@@ -6,18 +6,21 @@ const AuthForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  
+    setLoading(true); // Set loading to true
+
     // Validate inputs
     if (!email.trim() || !password.trim()) {
       setError("Email and password are required");
+      setLoading(false); // Reset loading state
       return;
     }
-  
+
     try {
       // Send login request
       const response = await axios.post(
@@ -30,12 +33,12 @@ const AuthForm = () => {
           },
         }
       );
-  
+
       // Save token, role, and userId to localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userRole", response.data.role);
       localStorage.setItem("userId", response.data.userId);
-  
+
       // Redirect based on role
       if (response.data.role === "admin") {
         navigate("/admin-dashboard");
@@ -44,6 +47,8 @@ const AuthForm = () => {
       }
     } catch (error) {
       setError(error.response?.data?.message || "An error occurred");
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -103,16 +108,17 @@ const AuthForm = () => {
           />
           <button
             type="submit"
+            disabled={loading} // Disable button while loading
             style={{
               padding: "10px",
-              backgroundColor: "red",
+              backgroundColor: loading ? "#ccc" : "red", // Change button color when loading
               color: "white",
               border: "none",
               borderRadius: "5px",
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer", // Change cursor when loading
             }}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p style={{ marginTop: "15px" }}>
