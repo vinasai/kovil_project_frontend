@@ -49,6 +49,7 @@ const AdminUserManagement = () => {
             <tr>
               <th className="py-3 px-6 text-sm text-gray-600">Firstname</th>
               <th className="py-3 px-6 text-sm text-gray-600">Lastname</th>
+              <th className="py-3 px-6 text-sm text-gray-600">Email</th>
               <th className="py-3 px-6 text-sm text-gray-600">Date of Birth</th>
               <th className="py-3 px-6 text-sm text-gray-600">Address</th>
               <th className="py-3 px-6 text-sm text-gray-600">Family Members</th>
@@ -60,6 +61,7 @@ const AdminUserManagement = () => {
               <tr key={user._id}>
                 <td className="py-3 px-6 text-sm">{user.firstname}</td>
                 <td className="py-3 px-6 text-sm">{user.lastname}</td>
+                <td className="py-3 px-6 text-sm">{user.email}</td>
                 <td className="py-3 px-6 text-sm">{new Date(user.dob).toLocaleDateString()}</td>
                 <td className="py-3 px-6 text-sm">{user.address}</td>
                 <td className="py-3 px-6 text-sm">
