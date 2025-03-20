@@ -8,6 +8,7 @@ const SignupForm = () => {
     lastname: "",
     dob: "",
     address: "",
+    email: "",
     password: "",
     confirmpassword: "",
   });
@@ -36,6 +37,14 @@ const SignupForm = () => {
     setSuccess(null);
     setError(null);
 
+    // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setError("Please enter a valid email address.");
+        setLoading(false);
+        return;
+      }
+
     // Validate family members
     if (familyMembers.length > 0 && !validateFamilyMembers()) {
       setError("Please fill out all fields for family members.");
@@ -59,6 +68,7 @@ const SignupForm = () => {
         lastname: "",
         dob: "",
         address: "",
+        email: "",
         password: "",
         confirmpassword: "",
       });
@@ -119,6 +129,18 @@ const SignupForm = () => {
               required
               className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
             ></textarea>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Email</label>
+            <input
+              type="text"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
+            />
           </div>
 
           <div>
