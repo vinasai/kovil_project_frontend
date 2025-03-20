@@ -6,8 +6,6 @@ const SignupForm = () => {
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
-    natchathiram: "",
-    raasi: "",
     dob: "",
     address: "",
     password: "",
@@ -17,25 +15,48 @@ const SignupForm = () => {
   const [familyMembers, setFamilyMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validateFamilyMembers = () => {
+    for (const member of familyMembers) {
+      if (!member.name || !member.dob || !member.relationship) {
+        return false;
+      }
+    }
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setSuccess(null);
+    setError(null);
+
+    // Validate family members
+    if (familyMembers.length > 0 && !validateFamilyMembers()) {
+      setError("Please fill out all fields for family members.");
+      setLoading(false);
+      return;
+    }
+
+    // Validate password match
+    if (formData.password !== formData.confirmpassword) {
+      setError("Passwords do not match.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const payload = { ...formData, familyMembers }; // Combine data
       const response = await axios.post("http://localhost:5000/api/signup", payload);
-      setSuccess("Thank you for creating account!");
+      setSuccess("Thank you for creating an account!");
       setFormData({
         firstname: "",
         lastname: "",
-        natchathiram: "",
-        raasi: "",
         dob: "",
         address: "",
         password: "",
@@ -43,7 +64,7 @@ const SignupForm = () => {
       });
       setFamilyMembers([]);
     } catch (error) {
-      setSuccess("Failed to process your registration. Please try again.");
+      setError("Failed to process your registration. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -95,6 +116,7 @@ const SignupForm = () => {
               name="address"
               value={formData.address}
               onChange={handleChange}
+              required
               className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
             ></textarea>
           </div>
@@ -149,6 +171,7 @@ const SignupForm = () => {
                     updated[index].name = e.target.value;
                     setFamilyMembers(updated);
                   }}
+                  required
                   className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
                 />
               </div>
@@ -163,6 +186,7 @@ const SignupForm = () => {
                     updated[index].dob = e.target.value;
                     setFamilyMembers(updated);
                   }}
+                  required
                   className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
                 />
               </div>
@@ -179,6 +203,7 @@ const SignupForm = () => {
                     updated[index].relationship = e.target.value;
                     setFamilyMembers(updated);
                   }}
+                  required
                   className="w-full p-2 rounded bg-[#FFFF] text-black border border-[#8B4513] focus:outline-none focus:ring-2 focus:ring-[#D2B48C]"
                 />
               </div>
@@ -193,7 +218,8 @@ const SignupForm = () => {
             {loading ? "Processing..." : "Sign Up"}
           </button>
         </form>
-        {success && <p className="text-center mt-4 text-sm">{success}</p>}
+        {success && <p className="text-center mt-4 text-sm text-green-600">{success}</p>}
+        {error && <p className="text-center mt-4 text-sm text-red-600">{error}</p>}
       </div>
     </>
   );
