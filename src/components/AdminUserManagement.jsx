@@ -4,6 +4,9 @@ import axios from 'axios';
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]); // State to store all users
   const [searchTerm, setSearchTerm] = useState(''); // State to store the search term
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [selectedUser, setSelectedUser] = useState(null); // State to store the selected user for editing
+  const [familyMembers, setFamilyMembers] = useState([]); // State to store family members for editing
 
   // Fetch users from the backend
   useEffect(() => {
@@ -38,10 +41,44 @@ const AdminUserManagement = () => {
     }
   };
 
-  // Handle edit (to be implemented)
-  const handleEdit = (userId) => {
-    console.log('Edit user:', userId);
-    // Add your edit logic here
+  // Open modal for editing family members
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setFamilyMembers(user.familyMembers || []);
+    setIsModalOpen(true);
+  };
+
+  // Close modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+    setFamilyMembers([]);
+  };
+
+  // Add a new family member
+  const addFamilyMember = () => {
+    setFamilyMembers([...familyMembers, { name: '', dob: '', relationship: '' }]);
+  };
+
+  // Update family member details
+  const updateFamilyMember = (index, field, value) => {
+    const updatedMembers = [...familyMembers];
+    updatedMembers[index][field] = value;
+    setFamilyMembers(updatedMembers);
+  };
+
+  // Save family members
+  const saveFamilyMembers = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/users/${selectedUser._id}/family-members`,
+        { familyMembers }
+      );
+      setUsers(users.map((user) => (user._id === selectedUser._id ? response.data : user)));
+      closeModal();
+    } catch (error) {
+      console.error('Error updating family members:', error);
+    }
   };
 
   // Filter users based on the search term
@@ -111,7 +148,7 @@ const AdminUserManagement = () => {
                   <td className="py-3 px-6 text-sm">
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleEdit(user._id)}
+                        onClick={() => handleEdit(user)}
                         className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                       >
                         Edit
@@ -136,6 +173,60 @@ const AdminUserManagement = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal for Editing Family Members */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-1/2">
+            <h3 className="text-xl font-semibold mb-4">Edit Family Members for {selectedUser.firstname}</h3>
+            {familyMembers.map((member, index) => (
+              <div key={index} className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={member.name}
+                  onChange={(e) => updateFamilyMember(index, 'name', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md mb-2"
+                />
+                <input
+                  type="date"
+                  placeholder="Date of Birth"
+                  value={member.dob}
+                  onChange={(e) => updateFamilyMember(index, 'dob', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md mb-2"
+                />
+                <input
+                  type="text"
+                  placeholder="Relationship"
+                  value={member.relationship}
+                  onChange={(e) => updateFamilyMember(index, 'relationship', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md mb-2"
+                />
+              </div>
+            ))}
+            <button
+              onClick={addFamilyMember}
+              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            >
+              Add Family Member
+            </button>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={closeModal}
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveFamilyMembers}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
