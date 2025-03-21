@@ -21,14 +21,19 @@ const AdminUserManagement = () => {
 
   // Delete a user
   const deleteUser = (userId) => {
+    console.log('Attempting to delete user with ID:', userId); // Debugging
     if (window.confirm('Are you sure you want to delete this user?')) {
       axios
         .delete(`http://localhost:5000/api/users/${userId}`)
         .then(() => {
+          console.log('User deleted successfully'); // Debugging
           setUsers(users.filter((user) => user._id !== userId)); // Remove the deleted user from the state
         })
         .catch((error) => {
           console.error('Error deleting user:', error);
+          if (error.response) {
+            console.error('Backend responded with:', error.response.data); // Debugging
+          }
         });
     }
   };
