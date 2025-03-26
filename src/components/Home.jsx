@@ -3,7 +3,7 @@ import Header from './Header';
 import HeroSection from './HeroSection';
 import About from './AboutSection';
 import ContactForm from './ContactUs';
-import PanchangCard from './PanchangCard';
+
 import WeeklyPoojaList from './WeeklyPooja';
 import Facebook from './Facebook';
 
@@ -16,7 +16,7 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           {/* Left Column */}
           <div className="space-y-2">
-            <PanchangCard />
+         
             <Facebook />
           </div>
           {/* Right Column */}
