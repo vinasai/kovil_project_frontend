@@ -16,19 +16,24 @@ import DonationManagement from './components/DonationManagement';
 import ServiceDetails from './components/ServiceDetails';
 import Login from './components/Login';
 import AdminUserManagement from './components/AdminUserManagement';
-
 import { useLocation } from 'react-router-dom';
 import Headeradmin from './components/Headeradmin';
-
+import AdminRegistration from './components/AdminRegistration'; // Import the new component
 
 function Layout({ children }) {
   const location = useLocation();
-  const noHeaderFooterRoutes = ['/admin', '/admindashboard','/eventadmin','/donateadmin'];
+  const noHeaderFooterRoutes = [
+    '/admin', 
+    '/admindashboard',
+    '/eventadmin',
+    '/donateadmin',
+    '/admin-registration' // Add this route to hide default header/footer
+  ];
   const hideHeaderFooter = noHeaderFooterRoutes.includes(location.pathname);
 
   return (
     <div>
-    {hideHeaderFooter ? <Headeradmin /> : <Header />}
+      {hideHeaderFooter ? <Headeradmin /> : <Header />}
       {children}
       {!hideHeaderFooter && <Footer />}
     </div>
@@ -55,8 +60,9 @@ function App() {
           <Route path="/donateadmin" element={<DonationManagement />} />
           <Route path="/servicedetails/:id" element={<ServiceDetails />} />
           <Route path="/login" element={<Login />} />
-        
           <Route path="/admin/users" element={<AdminUserManagement/>} />
+          {/* Add the new Admin Registration route */}
+          <Route path="/admin-registration" element={<AdminRegistration />} />
         </Routes>
       </Layout>
     </Router>
